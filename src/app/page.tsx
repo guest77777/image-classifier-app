@@ -2,32 +2,17 @@
 
 import { useState, useCallback, useEffect } from 'react';
 import { useDropzone } from 'react-dropzone';
-import * as tf from '@tensorflow/tfjs';
-import * as mobilenet from '@tensorflow-models/mobilenet';
+import Script from 'next/script';
 
 export default function Home() {
-  const [model, setModel] = useState<mobilenet.MobileNet | null>(null);
   const [prediction, setPrediction] = useState<string>('');
   const [isLoading, setIsLoading] = useState(false);
 
-  // モデルの初期化
-  useEffect(() => {
-    const loadModel = async () => {
-      try {
-        const loadedModel = await mobilenet.load();
-        setModel(loadedModel);
-      } catch (error) {
-        console.error('モデルの読み込みに失敗しました:', error);
-      }
-    };
-    loadModel();
-  }, []);
-
   // 画像の分類
   const classifyImage = async (imageElement: HTMLImageElement) => {
-    if (!model) return;
-    
     try {
+      // @ts-ignore
+      const model = await window.mobilenet.load();
       const predictions = await model.classify(imageElement);
       if (predictions && predictions.length > 0) {
         setPrediction(`${predictions[0].className} (${Math.round(predictions[0].probability * 100)}%)`);
@@ -57,7 +42,7 @@ export default function Home() {
     };
 
     reader.readAsDataURL(file);
-  }, [model]);
+  }, []);
 
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
     onDrop,
@@ -68,34 +53,39 @@ export default function Home() {
   });
 
   return (
-    <div className="max-w-4xl mx-auto">
-      <h1 className="text-3xl font-bold mb-8">画像分類アプリ</h1>
+    <>
+      <Script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs" strategy="beforeInteractive" />
+      <Script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/mobilenet" strategy="beforeInteractive" />
       
-      <div
-        {...getRootProps()}
-        className={`p-8 border-2 border-dashed rounded-lg text-center cursor-pointer transition-colors
-          ${isDragActive ? 'border-blue-500 bg-blue-50' : 'border-gray-300 hover:border-gray-400'}`}
-      >
-        <input {...getInputProps()} />
-        {isDragActive ? (
-          <p className="text-blue-500">ここにドロップしてください</p>
-        ) : (
-          <p>クリックまたはドラッグ＆ドロップで画像をアップロード</p>
+      <div className="max-w-4xl mx-auto">
+        <h1 className="text-3xl font-bold mb-8">画像分類アプリ</h1>
+        
+        <div
+          {...getRootProps()}
+          className={`p-8 border-2 border-dashed rounded-lg text-center cursor-pointer transition-colors
+            ${isDragActive ? 'border-blue-500 bg-blue-50' : 'border-gray-300 hover:border-gray-400'}`}
+        >
+          <input {...getInputProps()} />
+          {isDragActive ? (
+            <p className="text-blue-500">ここにドロップしてください</p>
+          ) : (
+            <p>クリックまたはドラッグ＆ドロップで画像をアップロード</p>
+          )}
+        </div>
+
+        {isLoading && (
+          <div className="mt-4 text-center text-gray-600">
+            分類中...
+          </div>
+        )}
+
+        {prediction && (
+          <div className="mt-4 p-4 bg-green-50 rounded-lg">
+            <h2 className="font-bold mb-2">分類結果:</h2>
+            <p>{prediction}</p>
+          </div>
         )}
       </div>
-
-      {isLoading && (
-        <div className="mt-4 text-center text-gray-600">
-          分類中...
-        </div>
-      )}
-
-      {prediction && (
-        <div className="mt-4 p-4 bg-green-50 rounded-lg">
-          <h2 className="font-bold mb-2">分類結果:</h2>
-          <p>{prediction}</p>
-        </div>
-      )}
-    </div>
+    </>
   );
 }
