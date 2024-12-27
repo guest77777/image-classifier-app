@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useEffect } from 'react';
 import { useDropzone } from 'react-dropzone';
 import * as tf from '@tensorflow/tfjs';
 import * as mobilenet from '@tensorflow-models/mobilenet';
@@ -11,7 +11,7 @@ export default function Home() {
   const [isLoading, setIsLoading] = useState(false);
 
   // モデルの初期化
-  useState(() => {
+  useEffect(() => {
     const loadModel = async () => {
       try {
         const loadedModel = await mobilenet.load();
@@ -35,6 +35,8 @@ export default function Home() {
     } catch (error) {
       console.error('画像の分類に失敗しました:', error);
       setPrediction('エラー: 画像の分類に失敗しました');
+    } finally {
+      setIsLoading(false);
     }
   };
 
