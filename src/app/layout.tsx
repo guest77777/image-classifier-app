@@ -9,8 +9,8 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-  title: "画像処理アプリ",
-  description: "画像の処理と分析を行うWebアプリケーション",
+  title: "画像分類アプリ",
+  description: "TensorFlow.jsを使用した画像分類Webアプリケーション",
 };
 
 export default function RootLayout({
@@ -19,9 +19,11 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="ja">
+    <html lang="ja" className="h-full">
       <body className={`${inter.variable} font-sans antialiased min-h-screen bg-gray-50`}>
-        {children}
+        <main className="container mx-auto px-4 py-8">
+          {children}
+        </main>
       </body>
     </html>
   );

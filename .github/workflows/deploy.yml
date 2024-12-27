@@ -5,6 +5,9 @@ on:
     branches:
       - main
 
+permissions:
+  contents: write
+
 jobs:
   deploy:
     runs-on: ubuntu-latest
@@ -19,7 +22,9 @@ jobs:
           cache: 'npm'
 
       - name: Install dependencies
-        run: npm ci
+        run: |
+          npm install
+          npm install sharp
 
       - name: Build
         run: npm run build
@@ -32,5 +37,4 @@ jobs:
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: ./out
-          cname: ${{ secrets.CNAME }}
           enable_jekyll: false 
