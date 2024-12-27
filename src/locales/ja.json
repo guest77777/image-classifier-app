@@ -1,0 +1,39 @@
+{
+  "app": {
+    "title": "補助金申請支援OCRアプリケーション",
+    "description": "画像からテキストを抽出し、自動分類を行います"
+  },
+  "fileSelector": {
+    "dropzone": {
+      "title": "ファイルをドロップ",
+      "subtitle": "または クリックしてファイルを選択",
+      "multipleFiles": "複数のファイルをアップロードできます"
+    },
+    "validation": {
+      "maxFiles": "ファイル数は{count}個以下にしてください",
+      "maxSize": "ファイルサイズは{size}MB以下にしてください",
+      "invalidType": "許可されていないファイル形式です",
+      "success": "ファイルの検証が完了しました"
+    }
+  },
+  "ocr": {
+    "processing": "OCR処理中...",
+    "success": "テキスト抽出が完了しました",
+    "error": "OCR処理中にエラーが発生しました"
+  },
+  "storage": {
+    "saving": "保存中...",
+    "success": "保存が完了しました",
+    "error": "保存中にエラーが発生しました",
+    "download": "ダウンロード"
+  },
+  "common": {
+    "loading": "読み込み中...",
+    "error": "エラーが発生しました",
+    "retry": "再試行",
+    "cancel": "キャンセル",
+    "save": "保存",
+    "delete": "削除",
+    "preview": "プレビュー"
+  }
+} 
