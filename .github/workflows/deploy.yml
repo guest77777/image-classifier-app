@@ -10,25 +10,27 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
 
       - name: Setup Node.js
-        uses: actions/setup-node@v2
+        uses: actions/setup-node@v3
         with:
           node-version: '18.17.0'
+          cache: 'npm'
 
       - name: Install dependencies
-        run: |
-          npm install --legacy-peer-deps
-          npm install -g @next/swc-linux-x64-gnu
+        run: npm ci
 
       - name: Build
         run: npm run build
         env:
+          GITHUB_ACTIONS: true
           NEXT_TELEMETRY_DISABLED: 1
 
       - name: Deploy
         uses: peaceiris/actions-gh-pages@v3
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./out 
+          publish_dir: ./out
+          cname: ${{ secrets.CNAME }}
+          enable_jekyll: false 
